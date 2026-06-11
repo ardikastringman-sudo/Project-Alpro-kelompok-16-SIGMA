@@ -12,8 +12,16 @@ struct Mahasiswa {
 };
 Mahasiswa database[50]; // Array untuk menyimpan data mahasiswa, maksimal 50 orang, bisa juga pake const int MAX_MAHASISWA = 50;
 
+void headerMenu(){
+    cout << "\n===============================\n";
+    cout << "          SIGMA\n";
+    cout << " Sistem Guna Manajemen Absensi\n";
+    cout << "===============================\n";
+}
+
 void Signup_mahasiswa() {
     system("cls");
+    headerMenu();
     int jumlah_mhs = 0; // Untuk menghitung berapa mahasiswa yang sudah daftar
     if (jumlah_mhs < 50) {
         cout << "\nREGISTRASI MAHASISWA BARU\n";
@@ -43,6 +51,7 @@ void Signup_mahasiswa() {
 
 void login_mahasiswa() {
     system("cls");
+    headerMenu();
     string login_nama, login_Nim, login_password;
     cout << "\nLOGIN MAHASISWA\n";
     cout << "Masukan nama lengkap : ";
@@ -61,10 +70,12 @@ void login_mahasiswa() {
     cout << "\n[-] Login gagal! Data tidak ditemukan.\n";
 }
 
+
 int main() {
     int jumlah_mhs = 0; // buat ngitung berapa mahasiswa yang sudah daftar
     int pilihan, pilihan_awal;
-        cout << "masuk sebagai: ";
+    headerMenu();
+        cout << "Masuk sebagai: ";
         cout << "\n1. Mahasiswa";
         cout << "\n2. Dosen";
         cout << "\npilihan: ";
