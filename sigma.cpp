@@ -102,8 +102,13 @@ void menuDosen(int index);
 void pilihMatkulDosen(int index);
 void bukaAbsensi(int index);
 void tutupAbsensi();
+void riwayatDosen(int index);
 
 void tampilMatkul();
+void menuEditMhs();
+void tampilMahasiswa();
+void hapusMahasiswa();
+void hapusMatkulMahasiswa();
 string getTanggal();                 // Pakai POINTER tm* bawaan ctime
 string getWaktu();                   // Pakai POINTER tm* bawaan ctime
 
@@ -450,6 +455,8 @@ void menuDosen(int index) {
         cout << "1. Pilih Mata Kuliah & Kelas Ampuan\n";
         cout << "2. Buka Sesi Absensi\n";
         cout << "3. Tutup Sesi Absensi\n";
+        cout << "4. Riwayat Absensi\n";
+        cout << "5. Edit Mahasiswa\n";
         cout << "0. Log Out\n";
         cout << "Pilihan: ";
         cin >> pil;
@@ -458,6 +465,8 @@ void menuDosen(int index) {
         if(pil == 1) pilihMatkulDosen(index);
         else if(pil == 2) bukaAbsensi(index);
         else if(pil == 3) tutupAbsensi();
+        else if(pil == 4) riwayatDosen(index);
+        else if(pil == 5) menuEditMhs();
         else if(pil == 0) break;
         else {
             cout << "Pilihan tidak valid!\n";
@@ -561,6 +570,198 @@ void tutupAbsensi() {
     matkulAktif = -1;
     kelasAktif = '\0';
 
+    system("pause");
+}
+void riwayatDosen(int index) {
+    system("cls");
+    
+    if (database_dosen[index].matkulDiampu == -1) {
+        cout << "\n[Sistem] Anda belum memilih mata kuliah dan kelas yang diampu!\n";
+        system("pause");
+        return;
+    }
+
+    string matkulDosen = matkul[database_dosen[index].matkulDiampu].namaMatkul;
+    char kelasDosen = database_dosen[index].kelasDiampu;
+    bool ditemukan = false;
+
+    cout << "\n===== RIWAYAT ABSENSI MAHASISWA =====\n";
+    cout << "Mata Kuliah : " << matkulDosen << "\n";
+    cout << "Kelas       : " << kelasDosen << "\n";
+    cout << "-------------------------------------------\n";
+
+    for(int i = 0; i < jumlahAbsensi; i++) {
+        if(database_absensi[i].matkul == matkulDosen && database_absensi[i].kelas == kelasDosen) {
+            ditemukan = true;
+            cout << "Tanggal  : " << database_absensi[i].tanggal << " (" << database_absensi[i].waktu << ")\n";
+            cout << "NIM      : " << database_absensi[i].nim << "\n";
+            cout << "Nama     : " << database_absensi[i].nama << "\n";
+            cout << "Status   : " << database_absensi[i].keterangan << "\n";
+            cout << "-------------------------------------------\n";
+        }
+    }    
+    if(!ditemukan) {
+        cout << "Belum ada data absensi mahasiswa untuk kelas ini.\n";
+    }
+    system("pause");
+}
+
+// =============================
+// EDIT DAN HAPUS
+// =============================
+
+void menuEditMhs(){
+	system ("cls");
+	cout << "\n===== EDIT DATA MAHASISWA =====\n" << endl;
+	cout << endl;
+	cout << "1. Lihat Data Mahasiswa\n";
+    cout << "2. Hapus Data Mahasiswa\n";
+    cout << "3. Hapus Mata Kuliah Mahasiswa\n";
+    cout << "0. Kembali\n";
+	int pilih;
+	cout << "Pilihan: ";
+	cin >> pilih;
+	
+	switch (pilih){
+		case 1:
+			tampilMahasiswa();
+			system ("pause");
+			break;
+		case 2:
+			hapusMahasiswa();
+			break;
+		case 3:
+			hapusMatkulMahasiswa();
+			break;
+		case 0:
+			return;
+		default:
+			cout << "Input tidak valid!";
+	}
+}
+
+void tampilMahasiswa(){
+	cout << "\n===== DATA MAHASISWA =====\n";
+
+    if (jumlahMahasiswa == 0) {
+        cout << "Belum ada data mahasiswa.\n";
+        return;
+    }
+    for (int i = 0; i < jumlahMahasiswa; i++) {
+        cout << i + 1 << ". "
+             << database_mhs[i].nama_lengkap
+             << " | NIM : " << database_mhs[i].NIM
+             << " | Kelas : " << database_mhs[i].kelas
+             << endl;
+    }
+    
+}
+void hapusMahasiswa() {
+    system("cls");
+
+    cout << "\n===== DATA MAHASISWA =====\n";
+
+    if (jumlahMahasiswa == 0) {
+        cout << "Belum ada data mahasiswa.\n";
+        system("pause");
+        return;
+    }
+    for (int i = 0; i < jumlahMahasiswa; i++) {
+        cout << i + 1 << ". "
+             << database_mhs[i].nama_lengkap
+             << " | NIM : " << database_mhs[i].NIM
+             << " | Kelas : " << database_mhs[i].kelas
+             << endl;
+    }
+    int pilih;
+    cout << "\nPilih nomor mahasiswa yang akan dihapus : ";
+    cin >> pilih;
+    cin.ignore();
+
+    if (pilih < 1 || pilih > jumlahMahasiswa) {
+        cout << "\nPilihan tidak valid!\n";
+        system("pause");
+        return;
+    }
+    pilih--; 
+
+    for (int i = pilih; i < jumlahMahasiswa - 1; i++) {
+        database_mhs[i] = database_mhs[i + 1];
+    }
+    jumlahMahasiswa--;
+
+    cout << "\n[+] Data mahasiswa berhasil dihapus.\n";
+    system("pause");
+}
+void hapusMatkulMahasiswa() {
+    system("cls");
+
+    tampilMahasiswa();
+
+    if (jumlahMahasiswa == 0) {
+        system("pause");
+        return;
+    }
+    int pilihMhs;
+    cout << "\nPilih nomor mahasiswa : ";
+    cin >> pilihMhs;
+    cin.ignore();
+
+    if (pilihMhs < 1 || pilihMhs > jumlahMahasiswa) {
+        cout << "\nPilihan tidak valid!\n";
+        system("pause");
+        return;
+    }
+
+    pilihMhs--;
+
+    if (database_mhs[pilihMhs].jumlah_matkul == 0) {
+        cout << "\nMahasiswa belum mengambil mata kuliah.\n";
+        system("pause");
+        return;
+    }
+
+    cout << "\n===== DAFTAR MATA KULIAH =====\n";
+
+    for (int i = 0; i < database_mhs[pilihMhs].jumlah_matkul; i++) {
+        int idx = database_mhs[pilihMhs].matkul_diambil[i];
+
+        cout << i + 1 << ". "
+             << matkul[idx].namaMatkul
+             << endl;
+    }
+
+    int pilihMatkul;
+
+    cout << "\nPilih mata kuliah yang akan dihapus : ";
+    cin >> pilihMatkul;
+    cin.ignore();
+
+    if (pilihMatkul < 1 ||
+        pilihMatkul > database_mhs[pilihMhs].jumlah_matkul) {
+
+        cout << "\nPilihan tidak valid!\n";
+        system("pause");
+        return;
+    }
+
+    pilihMatkul--;
+
+    for (int i = pilihMatkul;
+         i < database_mhs[pilihMhs].jumlah_matkul - 1;
+         i++) {
+
+        database_mhs[pilihMhs].matkul_diambil[i] =
+        database_mhs[pilihMhs].matkul_diambil[i + 1];
+    }
+
+    database_mhs[pilihMhs].jumlah_matkul--;
+
+    if (database_mhs[pilihMhs].jumlah_matkul == 0) {
+        database_mhs[pilihMhs].matkulDipilih = -1;
+    }
+
+    cout << "\n[+] Mata kuliah berhasil dihapus.\n";
     system("pause");
 }
 // ============================================================
