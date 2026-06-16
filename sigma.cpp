@@ -40,6 +40,8 @@ struct Dosen {
     int jumlah_ampu = 0;
     int matkulDiampu = -1;          // Ditambahkan agar sinkron dengan menuDosen & bukaAbsensi
     char kelasDiampu; 
+
+    
 };
 
 struct MataKuliah {
@@ -79,6 +81,7 @@ MataKuliah matkul[MAX_MATKUL] = {
 };
 
 bool absensiDibuka = false;
+int dosenAktif = -1;
 int matkulAktif = -1;
 char kelasAktif; 
 
@@ -223,14 +226,26 @@ void menuMahasiswa(int index) {
         cout << "Pilihan: ";
         cin >> pil;
         cin.ignore();
+        
+        switch (pil){
+        	case 1:
+        		pilihMatkulMahasiswa(index);
+        		break;
+        	case 2:
+        		isiAbsensi(index);
+        		break;
+        	case 3:
+        		riwayatMahasiswa(index);
+        		break;
+        	case 0:
+        		return;
+        	default:
+        		cout << "Pilihan tidak valid!\n";
+            	system("pause");
+            	
+		}
 
-        if(pil == 1) pilihMatkulMahasiswa(index);
-        else if(pil == 2) isiAbsensi(index);
-        else if(pil == 0) break;
-        else {
-            cout << "Pilihan tidak valid!\n";
-            system("pause");
-        }
+        
     }
 }
 
@@ -334,6 +349,26 @@ void isiAbsensi(int index) {
     system("pause");
 }
 
+void riwayatMahasiswa(int index) {
+    system("cls");
+    bool ditemukan = false;
+    cout << "\n===== RIWAYAT ABSENSI ANDA =====\n";
+
+    for(int i = 0; i < jumlahAbsensi; i++) {
+        if(database_absensi[i].nim == database_mhs[index].NIM) {
+            ditemukan = true;
+            cout << "Tanggal  : " << database_absensi[i].tanggal << " (" << database_absensi[i].waktu << ")\n";
+            cout << "Matkul   : " << database_absensi[i].matkul << " (Kelas " << database_absensi[i].kelas << ")\n";
+            cout << "Status   : " << database_absensi[i].keterangan << "\n";
+            cout << "-------------------------------------------\n";
+        }
+    }
+    if(!ditemukan) {
+        cout << "\nBelum ada riwayat absensi tercatat.\n";
+    }
+    system("pause");
+}
+
 // ============================================================
 //   LOGIKA DOSEN
 // ============================================================
@@ -421,6 +456,8 @@ void menuDosen(int index) {
         cin.ignore();
 
         if(pil == 1) pilihMatkulDosen(index);
+        else if(pil == 2) bukaAbsensi(index);
+        else if(pil == 3) tutupAbsensi();
         else if(pil == 0) break;
         else {
             cout << "Pilihan tidak valid!\n";
@@ -431,6 +468,11 @@ void menuDosen(int index) {
 
 void pilihMatkulDosen(int idx_dosen) {
     system("cls");
+    if (absensiDibuka && dosenAktif == idx_dosen) {
+    cout << "\n[Sistem] Tidak bisa mengganti mata kuliah saat sesi absensi masih aktif.\n";
+    system("pause");
+    return;
+}
     tampilMatkul();
     cout << "\nPilih nomor mata kuliah yang ingin diampu: ";
     int pil; cin >> pil; cin.ignore();
@@ -465,7 +507,62 @@ void pilihMatkulDosen(int idx_dosen) {
     }
     system("pause");
 }
+void bukaAbsensi(int index) {
+    system("cls");
+    if (absensiDibuka) {
+        cout << "\n[Sistem] Sudah ada sesi aktif. Tutup dulu sebelum membuka baru.\n";
+        system("pause");
+        return;
+    }
+    if (absensiDibuka) {
+        cout << "\n[Sistem] Absensi sudah berjalan. Tutup dulu sebelum membuka lagi.\n";
+        system("pause");
+        return;
+    }
 
+    if (database_dosen[index].matkulDiampu == -1) {
+        cout << "\n[Sistem] Anda belum memilih mata kuliah!\n";
+        system("pause");
+        return;
+    }
+
+    absensiDibuka = true;
+    dosenAktif = index;
+    matkulAktif = database_dosen[index].matkulDiampu;
+    kelasAktif = database_dosen[index].kelasDiampu;
+
+    cout << "\n===== ABSENSI DIBUKA =====\n";
+    cout << "Mata Kuliah : " << matkul[matkulAktif].namaMatkul << "\n";
+    cout << "Kelas       : " << kelasAktif << "\n";
+    cout << "Tanggal     : " << getTanggal() << "\n";
+    cout << "Waktu       : " << getWaktu() << "\n";
+    cout << "Status      : TERBUKA\n";
+
+    system("pause");
+}
+void tutupAbsensi() {
+    system("cls");
+
+    if (!absensiDibuka) {
+        cout << "\n[Sistem] Absensi sudah tertutup.\n";
+        system("pause");
+        return;
+    }
+
+    cout << "\n===== ABSENSI DITUTUP =====\n";
+    cout << "Mata Kuliah : " << matkul[matkulAktif].namaMatkul << "\n";
+    cout << "Kelas       : " << kelasAktif << "\n";
+    cout << "Tanggal     : " << getTanggal() << "\n";
+    cout << "Waktu       : " << getWaktu() << "\n";
+    cout << "Status      : TERTUTUP\n";
+
+    absensiDibuka = false;
+    dosenAktif = -1;
+    matkulAktif = -1;
+    kelasAktif = '\0';
+
+    system("pause");
+}
 // ============================================================
 //   MAIN PROGRAM
 // ============================================================
