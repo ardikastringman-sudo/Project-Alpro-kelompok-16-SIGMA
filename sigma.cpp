@@ -30,6 +30,24 @@ struct Mahasiswa {
     int jumlah_matkul = 0;          // Ditambahkan agar sesuai dengan fungsi pilihMatkul
     int matkulDipilih = -1; 
     int status_absen = 0;   
+
+    void signupMahasiswa(string inputNama,
+                         string inputNIM,
+                         string inputPassword,
+                         char inputKelas) {
+
+        nama_lengkap = inputNama;
+        NIM = inputNIM;
+        password = inputPassword;
+        kelas = inputKelas;
+    }
+
+    bool loginMahasiswa(string inputNIM,
+                        string inputPassword) {
+
+        return (NIM == inputNIM &&
+                password == inputPassword);
+    }
 };
 
 struct Dosen {
@@ -41,7 +59,18 @@ struct Dosen {
     int matkulDiampu = -1;          // Ditambahkan agar sinkron dengan menuDosen & bukaAbsensi
     char kelasDiampu; 
 
-    
+    void signup_dosen(string inputNama, string inputPassword, string inputUsername) {
+    nama = inputNama;
+    password = inputPassword;
+    username = inputUsername;
+    }
+    bool loginDosen(string inputUsername, string inputPassword) {
+        if (username == inputUsername && password == inputPassword) {
+            return true;
+        }
+        return false;
+    }
+
 };
 
 struct MataKuliah {
@@ -96,8 +125,6 @@ void pilihMatkulMahasiswa(int index);
 void isiAbsensi(int index);
 void riwayatMahasiswa(int index);
 
-void Signup_dosen();                 // Pakai POINTER di dalamnya
-int loginDosen();
 void menuDosen(int index);           
 void pilihMatkulDosen(int index);
 void bukaAbsensi(int index);
@@ -161,63 +188,8 @@ void banner() {
 }
 
 // ============================================================
-//   LOGIKA MAHASISWA
+//  MAHASISWA
 // ============================================================
-void Signup_mahasiswa() {
-    system("cls");
-    banner();
-    if (jumlahMahasiswa < MAX_MHS) {
-        // PENGGUNAAN POINTER SANGAT DISARANKAN
-        Mahasiswa* mhsBaru = &database_mhs[jumlahMahasiswa];
-
-        cout << "\nREGISTRASI MAHASISWA BARU\n";
-        cout << "Masukan nama lengkap : ";
-        getline(cin, mhsBaru->nama_lengkap);
-            
-        cout << "Masukan NIM          : ";
-        getline(cin, mhsBaru->NIM);
-                
-        cout << "Masukan password     : ";
-        getline(cin, mhsBaru->password);
-               
-        cout << "Masukan Kelas (A/B/C/D): ";
-        cin >> mhsBaru->kelas;
-        cin.ignore();
-              
-        char daftar_kelas[4] = {'A', 'B', 'C', 'D'};
-        mhsBaru->kelas = daftar_kelas[jumlahMahasiswa % 4];
-        cout << "[Sistem] Kelas Anda otomatis ditetapkan: Kelas " << mhsBaru->kelas << "\n";
-        
-        mhsBaru->jumlah_matkul = 0;
-        jumlahMahasiswa++;
-        cout << "\n[+] Registrasi mahasiswa berhasil!\n";
-    } else {
-        cout << "\n[-] Maaf, database penuh!\n";
-    }
-    system("pause");
-}
- 
-int login_mahasiswa() {
-    system("cls");
-    banner();
-    string login_Nim, login_password;
-    cout << "\nLOGIN MAHASISWA\n";
-    cout << "Masukan NIM      : ";
-    getline(cin, login_Nim);
-    cout << "Masukan password : ";
-    getline(cin, login_password);
-
-    for (int i = 0; i < jumlahMahasiswa; i++) {
-        if (login_Nim == database_mhs[i].NIM && login_password == database_mhs[i].password) {
-            cout << "\n[+] Login berhasil! Selamat datang, " << database_mhs[i].nama_lengkap << "!\n";
-            system("pause");
-            return i;
-        }
-    }
-    cout << "\n[-] Login gagal! NIM atau Password salah.\n";
-    system("pause");
-    return -1;
-}
 
 void menuMahasiswa(int index) {
     int pil;
@@ -377,67 +349,6 @@ void riwayatMahasiswa(int index) {
 // ============================================================
 //   LOGIKA DOSEN
 // ============================================================
-void Signup_dosen() {
-    system("cls");
-    banner();
-    if (jumlah_dosen >= MAX_DOSEN) {
-        cout << "\n[-] Maaf, database dosen penuh!\n";
-        system("pause");
-        return;
-    }
-    
-    Dosen* dsnBaru = &database_dosen[jumlah_dosen];
-    
-    cout << "\nREGISTRASI DOSEN BARU\n";
-    cout << "Masukan nama     : ";
-    getline(cin, dsnBaru->nama);
-    string input_username;
-    cout << "Masukan username : ";
-    getline(cin, input_username);
-    
-    for (int i = 0; i < jumlah_dosen; i++) {
-        if (database_dosen[i].username == input_username) {
-            cout << "\n[-] Username sudah digunakan, coba username lain.\n";
-            system("pause");
-            return;
-        }
-    }
-    dsnBaru->username = input_username;
-    cout << "Masukan password : ";
-    getline(cin, dsnBaru->password);
-    
-    cout << "\n[+] Registrasi dosen berhasil!\n";
-    jumlah_dosen++;
-    
-    cout << "+==============================================================+\n";
-    cout << "  Nama     : " << dsnBaru->nama     << "\n";
-    cout << "  Username : " << dsnBaru->username << "\n";
-    cout << "  Password : " << dsnBaru->password << "\n";
-    cout << "+==============================================================+\n";
-    system("pause");
-}
-
-int loginDosen() {
-    system("cls");
-    banner();
-    string username, password;
-    cout << "\n===== LOGIN DOSEN =====\n";
-    cout << "Username : ";
-    getline(cin, username);
-    cout << "Password : ";
-    getline(cin, password);
-
-    for(int i = 0; i < jumlah_dosen; i++) {
-        if(username == database_dosen[i].username && password == database_dosen[i].password) {
-            cout << "\n[+] Login Berhasil! Selamat datang, " << database_dosen[i].nama << "\n";
-            system("pause");
-            return i;
-        }
-    }
-    cout << "\n[-] Username atau Password salah!\n";
-    system("pause");
-    return -1;
-}
 
 void menuDosen(int index) {
     int pil;
@@ -516,6 +427,7 @@ void pilihMatkulDosen(int idx_dosen) {
     }
     system("pause");
 }
+
 void bukaAbsensi(int index) {
     system("cls");
     if (absensiDibuka) {
@@ -799,11 +711,73 @@ int main() {
                 cin.ignore();
 
                 if (pilihan == 1) {
-                    Signup_mahasiswa();
+                    system("cls");
+                    banner();
+                    if (jumlahMahasiswa < MAX_MHS) {
+
+                        string nama, nim, password;
+
+                        cout << "Masukan nama lengkap : ";
+                        getline(cin, nama);
+
+                        cout << "Masukan NIM : ";
+                        getline(cin, nim);
+
+                        cout << "Masukan password : ";
+                        getline(cin, password);
+
+                        char daftar_kelas[4] = {'A','B','C','D'};
+                        char kelas = daftar_kelas[jumlahMahasiswa % 4];
+
+                        database_mhs[jumlahMahasiswa].signupMahasiswa(
+                            nama,
+                            nim,
+                            password,
+                            kelas
+                        );
+
+                        cout << "[Sistem] Kelas Anda otomatis ditetapkan: "
+                            << kelas << endl;
+
+                        jumlahMahasiswa++;
+
+                        cout << "\n[+] Registrasi mahasiswa berhasil!\n";
+                    } else {
+                        cout << "\n[-] Database penuh!\n";
+                    }
+
+                    system("pause");
                 } else if (pilihan == 2) {
-                    int idx = login_mahasiswa();
-                    if (idx != -1) {
-                        menuMahasiswa(idx);
+                    system ("cls");
+                    banner();
+                    string nim, pass;
+
+                    cout << "NIM : ";
+                    getline(cin, nim);
+
+                    cout << "Password : ";
+                    getline(cin, pass);
+
+                    bool status_login = false;
+
+                    for(int i = 0; i < jumlahMahasiswa; i++) {
+
+                        if(database_mhs[i].loginMahasiswa(nim, pass)) {
+
+                            cout << "\nLogin berhasil! Selamat datang, "
+                                << database_mhs[i].nama_lengkap << endl;
+
+                            system("pause");
+                            menuMahasiswa(i);
+
+                            status_login = true;
+                            break;
+                        }
+                    }
+
+                    if(!status_login) {
+                        cout << "\n[ERROR] NIM atau Password salah!\n";
+                        system("pause");
                     }
                 } else if (pilihan == 0) {
                     break;
@@ -811,6 +785,8 @@ int main() {
                     cout << "\n[ERROR] Pilihan tidak valid!\n";
                     system("pause");
                 }
+
+                
             }
         } else if (pilihan_awal == 2) {
             int pilihan;
@@ -826,11 +802,56 @@ int main() {
                 cin.ignore();
 
                 if (pilihan == 1) {
-                    Signup_dosen();
+                    if (jumlah_dosen < MAX_DOSEN) {
+                        string namasementara, usernamesementara, passwordsementara;
+                        cout << "\nREGISTRASI DOSEN BARU\n";
+                        cout << "Masukan nama     : "; getline(cin, namasementara);
+                        cout << "Masukan username : "; getline(cin, usernamesementara);
+                        bool username_terpakai = false;
+                        for (int i = 0; i < jumlah_dosen; i++) {
+                            if (database_dosen[i].username == usernamesementara) {
+                                username_terpakai = true;
+                                break;
+                            }
+                        }
+                        if (username_terpakai) {
+                            cout << "\n[ERROR] Username sudah digunakan, coba username lain.\n";
+                            system("pause");
+                        } else {
+                            cout << "Masukan password : "; getline(cin, passwordsementara);
+                            database_dosen[jumlah_dosen].signup_dosen(namasementara, passwordsementara, usernamesementara);
+                            cout << "\n[+] Registrasi dosen berhasil!\n";
+                            cout    << "+==============================================================+\n";
+                            cout    << "  Nama     : " << database_dosen[jumlah_dosen].nama     << "\n";
+                            cout    << "  Username : " << database_dosen[jumlah_dosen].username << "\n";
+                            cout    << "  Password : " << database_dosen[jumlah_dosen].password << "\n";
+                            cout    << "+==============================================================+\n";
+                            jumlah_dosen++;
+                        }
+                    } else {
+                        cout << "\n[ERROR] Maaf, database dosen penuh!\n";
+                        } system("pause");
+
                 } else if (pilihan == 2) {
-                    int idx = loginDosen();
-                    if (idx != -1) {
-                        menuDosen(idx);
+                   system ("cls");
+                   banner();
+                    string inputUsername, inputPassword;
+                    cout << "\n===== LOGIN DOSEN =====\n";
+                    cout << "Username : "; getline(cin, inputUsername);
+                    cout << "Password : "; getline(cin, inputPassword);
+                    bool status_login = false;
+                    for (int i = 0; i < jumlah_dosen; i++){
+                        if (database_dosen[i].loginDosen(inputUsername, inputPassword)) {
+                            cout << "\nLogin Berhasil! Selamat datang, " << database_dosen[i].nama << "\n";
+                            system("pause");
+                            menuDosen(i);
+                            status_login = true;
+                            break;
+                        }
+                    }
+                    if (!status_login) {
+                        cout << "\n[ERROR] Username atau Password salah!\n";
+                        system("pause");
                     }
                 } else if (pilihan == 0) {
                     break;
