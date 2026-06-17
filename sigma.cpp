@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <ctime>
+#include <conio.h>   
 
 using namespace std;
 
@@ -16,6 +17,7 @@ const int MAX_ABSENSI = 200;
 #define BLUE_LIGHT  "\033[38;2;21;95;160m"
 #define CYAN_TEAL   "\033[38;2;31;145;165m"
 #define ICE_BLUE    "\033[38;2;140;185;195m"
+#define RED         "\033[31m" 
 #define RESET       "\033[0m"
 
 // ============================================================
@@ -26,8 +28,8 @@ struct Mahasiswa {
     string nama_lengkap;
     string password;
     char kelas;
-    int matkul_diambil[MAX_MATKUL]; // Ditambahkan agar sesuai dengan fungsi pilihMatkul
-    int jumlah_matkul = 0;          // Ditambahkan agar sesuai dengan fungsi pilihMatkul
+    int matkul_diambil[MAX_MATKUL];
+    int jumlah_matkul = 0;
     int matkulDipilih = -1; 
     int status_absen = 0;   
 
@@ -35,7 +37,6 @@ struct Mahasiswa {
                          string inputNIM,
                          string inputPassword,
                          char inputKelas) {
-
         nama_lengkap = inputNama;
         NIM = inputNIM;
         password = inputPassword;
@@ -44,7 +45,6 @@ struct Mahasiswa {
 
     bool loginMahasiswa(string inputNIM,
                         string inputPassword) {
-
         return (NIM == inputNIM &&
                 password == inputPassword);
     }
@@ -56,13 +56,13 @@ struct Dosen {
     string password;
     int matkul_diampu[5];
     int jumlah_ampu = 0;
-    int matkulDiampu = -1;          // Ditambahkan agar sinkron dengan menuDosen & bukaAbsensi
+    int matkulDiampu = -1;
     char kelasDiampu; 
 
     void signup_dosen(string inputNama, string inputPassword, string inputUsername) {
-    nama = inputNama;
-    password = inputPassword;
-    username = inputUsername;
+        nama = inputNama;
+        password = inputPassword;
+        username = inputUsername;
     }
     bool loginDosen(string inputUsername, string inputPassword) {
         if (username == inputUsername && password == inputPassword) {
@@ -70,7 +70,6 @@ struct Dosen {
         }
         return false;
     }
-
 };
 
 struct MataKuliah {
@@ -92,7 +91,7 @@ struct Absensi {
 //   DATABASE GLOBAL
 // ============================================================
 Mahasiswa database_mhs[MAX_MHS];
-int jumlahMahasiswa = 0; // Diselaraskan menggunakan satu variabel ini
+int jumlahMahasiswa = 0;
 
 Dosen database_dosen[MAX_DOSEN];
 int jumlah_dosen = 0;
@@ -100,7 +99,6 @@ int jumlah_dosen = 0;
 Absensi database_absensi[MAX_ABSENSI];
 int jumlahAbsensi = 0;
 
-// Diselaraskan menggunakan struct MataKuliah agar fungsi tampilMatkul() bekerja
 MataKuliah matkul[MAX_MATKUL] = {
     {1, "Algoritma dan Pemrograman"},
     {2, "Sistem Digital"},
@@ -118,7 +116,7 @@ char kelasAktif;
 //   PROTOTIPE FUNGSI
 // ============================================================
 void banner();
-void Signup_mahasiswa();             // Pakai POINTER di dalamnya
+void Signup_mahasiswa();
 int login_mahasiswa();
 void menuMahasiswa(int index);       
 void pilihMatkulMahasiswa(int index);
@@ -136,9 +134,9 @@ void menuEditMhs();
 void tampilMahasiswa();
 void hapusMahasiswa();
 void hapusMatkulMahasiswa();
-string getTanggal();                 // Pakai POINTER tm* bawaan ctime
-string getWaktu();                   // Pakai POINTER tm* bawaan ctime
-
+string getTanggal();
+string getWaktu();
+void menuUtama(); 
 
 
 // ============================================================
@@ -169,26 +167,27 @@ void tampilMatkul() {
 
 void banner() {
     cout << "+==============================================================+\n";
-    cout << NAVY_BLUE  "|        :####:    ######    :####:   ###  ###    :##:         |\n";
-    cout << NAVY_BLUE  "|       :######    ######    ######   ###  ###     ##          |\n";
-    cout << NAVY_BLUE  "|       ##:    :#     ##     :##:  .#  ###::###    ####          |\n";
-    cout << BLUE_LIGHT "|       ##           ##     ##:       ###  ###    ####          |\n";
-    cout << BLUE_LIGHT "|       ###:         ##     ##.       ## ## ##    :#  #:        |\n";
-    cout << BLUE_LIGHT "|       :#####:      ##     ##        ##:##:##    #::#          |\n";
-    cout << CYAN_TEAL  "|        .#####:     ##     ##  ####  ##.##.##   ##  ##         |\n";
-    cout << CYAN_TEAL  "|            :###    ##     ##. ####  ## ## ##   ######         |\n";
-    cout << CYAN_TEAL  "|              ##    ##     ##:   ##  ##    ##  .######.        |\n";
-    cout << ICE_BLUE   "|       #:.    :##    ##     :##:  ##  ##    ##  :##  ##:        |\n";
-    cout << ICE_BLUE   "|       #######:    ######     #######  ##    ##  ###  ###        |\n";
-    cout << ICE_BLUE   "|       .#####:     ######     :####.   ##    ##  ##:  :##        |\n";
+    cout << NAVY_BLUE  "|         :####:   ######    :####:   ###  ###    :##:         |\n";
+    cout << NAVY_BLUE  "|        :######   ######    ######   ###  ###     ##          |\n";
+    cout << NAVY_BLUE  "|       ##:    :#    ##     :##:  .#  ###::###    ####         |\n";
+    cout << BLUE_LIGHT "|       ##           ##     ##:       ###  ###    ####         |\n";
+    cout << BLUE_LIGHT "|       ###:         ##     ##.       ## ## ##   :#  #:        |\n";
+    cout << BLUE_LIGHT "|       :#####:      ##     ##        ##:##:##    #::#         |\n";
+    cout << CYAN_TEAL  "|        .#####:     ##     ##  ####  ##.##.##   ##  ##        |\n";
+    cout << CYAN_TEAL  "|            :###    ##     ##. ####  ## ## ##   ######        |\n";
+    cout << CYAN_TEAL  "|              ##    ##     ##:   ##  ##    ##  .######.       |\n";
+    cout << ICE_BLUE   "|       #:.    :##   ##     :##:  ##  ##    ##  :##  ##:       |\n";
+    cout << ICE_BLUE   "|        #######:  ######    #######  ##    ##  ###  ###       |\n";
+    cout << ICE_BLUE   "|        .#####:   ######     :####.  ##    ##  ##:  :##       |\n";
     cout << RESET;
     cout << "+==============================================================+\n";
-    cout << "|                SISTEM GUNA ABSENSI MAHASISWA                 |\n";
+    cout << NAVY_BLUE "|                SISTEM GUNA ABSENSI MAHASISWA                 |\n";
+    cout << RESET;
     cout << "+==============================================================+\n";
 }
 
 // ============================================================
-//  MAHASISWA
+//   MAHASISWA
 // ============================================================
 
 void menuMahasiswa(int index) {
@@ -205,24 +204,21 @@ void menuMahasiswa(int index) {
         cin.ignore();
         
         switch (pil){
-        	case 1:
-        		pilihMatkulMahasiswa(index);
-        		break;
-        	case 2:
-        		isiAbsensi(index);
-        		break;
-        	case 3:
-        		riwayatMahasiswa(index);
-        		break;
-        	case 0:
-        		return;
-        	default:
-        		cout << "Pilihan tidak valid!\n";
-            	system("pause");
-            	
-		}
-
-        
+            case 1:
+                pilihMatkulMahasiswa(index);
+                break;
+            case 2:
+                isiAbsensi(index);
+                break;
+            case 3:
+                riwayatMahasiswa(index);
+                break;
+            case 0:
+                return;
+            default:
+                cout << "Pilihan tidak valid!\n";
+                system("pause");
+        }
     }
 }
 
@@ -231,8 +227,6 @@ void pilihMatkulMahasiswa(int idx_mhs) {
     tampilMatkul();
     cout << "\nPilih nomor mata kuliah yang ingin diambil: ";
     int pil; cin >> pil; cin.ignore();
-    
-    
     
     if (pil >= 1 && pil <= MAX_MATKUL) {
         int idx_matkul = pil - 1;
@@ -389,10 +383,10 @@ void menuDosen(int index) {
 void pilihMatkulDosen(int idx_dosen) {
     system("cls");
     if (absensiDibuka && dosenAktif == idx_dosen) {
-    cout << "\n[Sistem] Tidak bisa mengganti mata kuliah saat sesi absensi masih aktif.\n";
-    system("pause");
-    return;
-}
+        cout << "\n[Sistem] Tidak bisa mengganti mata kuliah saat sesi absensi masih aktif.\n";
+        system("pause");
+        return;
+    }
     tampilMatkul();
     cout << "\nPilih nomor mata kuliah yang ingin diampu: ";
     int pil; cin >> pil; cin.ignore();
@@ -411,7 +405,7 @@ void pilihMatkulDosen(int idx_dosen) {
         if (!sudah_ada) {
             int pos = database_dosen[idx_dosen].jumlah_ampu;
             database_dosen[idx_dosen].matkul_diampu[pos] = idx_matkul;
-            database_dosen[idx_dosen].matkulDiampu = idx_matkul; // Set matkul aktif dosen saat ini
+            database_dosen[idx_dosen].matkulDiampu = idx_matkul;
             database_dosen[idx_dosen].jumlah_ampu++;
             
             cout << "Masukkan kelas yang diampu (A/B/C/D): ";
@@ -432,11 +426,6 @@ void bukaAbsensi(int index) {
     system("cls");
     if (absensiDibuka) {
         cout << "\n[Sistem] Sudah ada sesi aktif. Tutup dulu sebelum membuka baru.\n";
-        system("pause");
-        return;
-    }
-    if (absensiDibuka) {
-        cout << "\n[Sistem] Absensi sudah berjalan. Tutup dulu sebelum membuka lagi.\n";
         system("pause");
         return;
     }
@@ -461,6 +450,7 @@ void bukaAbsensi(int index) {
 
     system("pause");
 }
+
 void tutupAbsensi() {
     system("cls");
 
@@ -484,6 +474,7 @@ void tutupAbsensi() {
 
     system("pause");
 }
+
 void riwayatDosen(int index) {
     system("cls");
     
@@ -523,37 +514,37 @@ void riwayatDosen(int index) {
 // =============================
 
 void menuEditMhs(){
-	system ("cls");
-	cout << "\n===== EDIT DATA MAHASISWA =====\n" << endl;
-	cout << endl;
-	cout << "1. Lihat Data Mahasiswa\n";
+    system("cls");
+    cout << "\n===== EDIT DATA MAHASISWA =====\n" << endl;
+    cout << endl;
+    cout << "1. Lihat Data Mahasiswa\n";
     cout << "2. Hapus Data Mahasiswa\n";
     cout << "3. Hapus Mata Kuliah Mahasiswa\n";
     cout << "0. Kembali\n";
-	int pilih;
-	cout << "Pilihan: ";
-	cin >> pilih;
-	
-	switch (pilih){
-		case 1:
-			tampilMahasiswa();
-			system ("pause");
-			break;
-		case 2:
-			hapusMahasiswa();
-			break;
-		case 3:
-			hapusMatkulMahasiswa();
-			break;
-		case 0:
-			return;
-		default:
-			cout << "Input tidak valid!";
-	}
+    int pilih;
+    cout << "Pilihan: ";
+    cin >> pilih;
+    
+    switch (pilih){
+        case 1:
+            tampilMahasiswa();
+            system("pause");
+            break;
+        case 2:
+            hapusMahasiswa();
+            break;
+        case 3:
+            hapusMatkulMahasiswa();
+            break;
+        case 0:
+            return;
+        default:
+            cout << "Input tidak valid!";
+    }
 }
 
 void tampilMahasiswa(){
-	cout << "\n===== DATA MAHASISWA =====\n";
+    cout << "\n===== DATA MAHASISWA =====\n";
 
     if (jumlahMahasiswa == 0) {
         cout << "Belum ada data mahasiswa.\n";
@@ -566,8 +557,8 @@ void tampilMahasiswa(){
              << " | Kelas : " << database_mhs[i].kelas
              << endl;
     }
-    
 }
+
 void hapusMahasiswa() {
     system("cls");
 
@@ -586,7 +577,7 @@ void hapusMahasiswa() {
              << endl;
     }
     int pilih;
-    cout << "\nPilih nomor mahasiswa yang akan dihapus : ";
+    cout << "\nPilihan nomor mahasiswa yang akan dihapus : ";
     cin >> pilih;
     cin.ignore();
 
@@ -595,7 +586,7 @@ void hapusMahasiswa() {
         system("pause");
         return;
     }
-    pilih--; 
+    pilih--;
 
     for (int i = pilih; i < jumlahMahasiswa - 1; i++) {
         database_mhs[i] = database_mhs[i + 1];
@@ -605,6 +596,7 @@ void hapusMahasiswa() {
     cout << "\n[+] Data mahasiswa berhasil dihapus.\n";
     system("pause");
 }
+
 void hapusMatkulMahasiswa() {
     system("cls");
 
@@ -637,21 +629,18 @@ void hapusMatkulMahasiswa() {
 
     for (int i = 0; i < database_mhs[pilihMhs].jumlah_matkul; i++) {
         int idx = database_mhs[pilihMhs].matkul_diambil[i];
-
         cout << i + 1 << ". "
              << matkul[idx].namaMatkul
              << endl;
     }
 
     int pilihMatkul;
-
     cout << "\nPilih mata kuliah yang akan dihapus : ";
     cin >> pilihMatkul;
     cin.ignore();
 
     if (pilihMatkul < 1 ||
         pilihMatkul > database_mhs[pilihMhs].jumlah_matkul) {
-
         cout << "\nPilihan tidak valid!\n";
         system("pause");
         return;
@@ -662,7 +651,6 @@ void hapusMatkulMahasiswa() {
     for (int i = pilihMatkul;
          i < database_mhs[pilihMhs].jumlah_matkul - 1;
          i++) {
-
         database_mhs[pilihMhs].matkul_diambil[i] =
         database_mhs[pilihMhs].matkul_diambil[i + 1];
     }
@@ -676,194 +664,208 @@ void hapusMatkulMahasiswa() {
     cout << "\n[+] Mata kuliah berhasil dihapus.\n";
     system("pause");
 }
+
+// ============================================================
+//   FUNGSI MENU UTAMA 
+// ============================================================
+void menuUtama() {
+    string opsi[] = {
+        "MASUK SEBAGAI MAHASISWA",
+        "  MASUK SEBAGAI DOSEN  ",
+        "    KELUAR APLIKASI    "
+    };
+
+    int sel = 0;
+    char key;
+    const int TOTAL_MENU = 3;
+
+    while (true) {
+        system("cls");
+        banner();
+        cout << "  Data Mhs: " << jumlahMahasiswa << "/" << MAX_MHS << "  |  Panah: navigasi  |  Enter: pilih" << endl;
+        cout << "---------------------------------------------------------------" << endl;
+
+        for (int i = 0; i < TOTAL_MENU; i++) {
+            cout << "              ==================================" << endl;
+            if (i == sel) {
+                if (i == 2) { 
+                    cout << "              |" << RED << " >> " << opsi[i] << " << " << RESET << "|" << endl;
+                } else { 
+                    cout << "              |" << BLUE_LIGHT << " >> " << opsi[i] << " << " << RESET << "|" << endl;
+                }
+            } else {
+                cout << "              |    " << opsi[i] << "    |" << endl;
+            }
+        }
+        cout << "              ==================================" << endl;
+        cout << "---------------------------------------------------------------" << endl;
+
+        key = _getch();
+        if (key == 0 || key == (char)224) {
+            key = _getch();
+            if (key == 72) { sel--; if (sel < 0) sel = TOTAL_MENU - 1; } // Panah ATAS
+            if (key == 80) { sel++; if (sel >= TOTAL_MENU) sel = 0; }    // Panah BAWAH
+        } 
+        else if (key == 13 || key == 32) { // Tombol Enter atau Spasi
+            if (sel == 2) {
+                // Keluar Aplikasi
+                system("cls");
+                cout << "\nTerima kasih telah menggunakan sistem ini!\n";
+                break;
+            }
+
+            // ---- MENU MAHASISWA ----
+            if (sel == 0) {
+                int pilihan;
+                while (true) {
+                    system("cls");
+                    banner();
+                    cout << "\n[MENU UTAMA MAHASISWA]\n";
+                    cout << "1. Sign Up (Registrasi)\n";
+                    cout << "2. Sign In (Login)\n";
+                    cout << "0. Kembali ke Menu Utama\n";
+                    cout << "Pilihan: ";
+                    cin >> pilihan;
+                    cin.ignore();
+
+                    if (pilihan == 1) {
+                        system("cls");
+                        banner();
+                        if (jumlahMahasiswa < MAX_MHS) {
+                            string nama, nim, password;
+                            cout << "Masukan nama lengkap : ";
+                            getline(cin, nama);
+                            cout << "Masukan NIM : ";
+                            getline(cin, nim);
+                            cout << "Masukan password : ";
+                            getline(cin, password);
+
+                            char daftar_kelas[4] = {'A','B','C','D'};
+                            char kelas = daftar_kelas[jumlahMahasiswa % 4];
+
+                            database_mhs[jumlahMahasiswa].signupMahasiswa(nama, nim, password, kelas);
+                            cout << "[Sistem] Kelas Anda otomatis ditetapkan: " << kelas << endl;
+                            jumlahMahasiswa++;
+                            cout << "\n[+] Registrasi mahasiswa berhasil!\n";
+                        } else {
+                            cout << "\n[-] Database penuh!\n";
+                        }
+                        system("pause");
+                    } else if (pilihan == 2) {
+                        system("cls");
+                        banner();
+                        string nim, pass;
+                        cout << "NIM : ";
+                        getline(cin, nim);
+                        cout << "Password : ";
+                        getline(cin, pass);
+
+                        bool status_login = false;
+                        for(int i = 0; i < jumlahMahasiswa; i++) {
+                            if(database_mhs[i].loginMahasiswa(nim, pass)) {
+                                cout << "\nLogin berhasil! Selamat datang, "
+                                     << database_mhs[i].nama_lengkap << endl;
+                                system("pause");
+                                menuMahasiswa(i);
+                                status_login = true;
+                                break;
+                            }
+                        }
+                        if(!status_login) {
+                            cout << "\n[ERROR] NIM atau Password salah!\n";
+                            system("pause");
+                        }
+                    } else if (pilihan == 0) {
+                        break;
+                    } else {
+                        cout << "\n[ERROR] Pilihan tidak valid!\n";
+                        system("pause");
+                    }
+                }
+            }
+
+            // ---- MENU DOSEN ----
+            else if (sel == 1) {
+                int pilihan;
+                while (true) {
+                    system("cls");
+                    banner();
+                    cout << "\n[MENU UTAMA DOSEN]\n";
+                    cout << "1. Sign Up (Registrasi)\n";
+                    cout << "2. Sign In (Login)\n";
+                    cout << "0. Kembali ke Menu Utama\n";
+                    cout << "Pilihan: ";
+                    cin >> pilihan;
+                    cin.ignore();
+
+                    if (pilihan == 1) {
+                        if (jumlah_dosen < MAX_DOSEN) {
+                            string namasementara, usernamesementara, passwordsementara;
+                            cout << "\nREGISTRASI DOSEN BARU\n";
+                            cout << "Masukan nama     : "; getline(cin, namasementara);
+                            cout << "Masukan username : "; getline(cin, usernamesementara);
+                            bool username_terpakai = false;
+                            for (int i = 0; i < jumlah_dosen; i++) {
+                                if (database_dosen[i].username == usernamesementara) {
+                                    username_terpakai = true;
+                                    break;
+                                }
+                            }
+                            if (username_terpakai) {
+                                cout << "\n[ERROR] Username sudah digunakan, coba username lain.\n";
+                                system("pause");
+                            } else {
+                                cout << "Masukan password : "; getline(cin, passwordsementara);
+                                database_dosen[jumlah_dosen].signup_dosen(namasementara, passwordsementara, usernamesementara);
+                                cout << "\n[+] Registrasi dosen berhasil!\n";
+                                cout << "+==============================================================+\n";
+                                cout << "  Nama     : " << database_dosen[jumlah_dosen].nama     << "\n";
+                                cout << "  Username : " << database_dosen[jumlah_dosen].username << "\n";
+                                cout << "  Password : " << database_dosen[jumlah_dosen].password << "\n";
+                                cout << "+==============================================================+\n";
+                                jumlah_dosen++;
+                            }
+                        } else {
+                            cout << "\n[ERROR] Maaf, database dosen penuh!\n";
+                        }
+                        system("pause");
+                    } else if (pilihan == 2) {
+                        system("cls");
+                        banner();
+                        string inputUsername, inputPassword;
+                        cout << "\n===== LOGIN DOSEN =====\n";
+                        cout << "Username : "; getline(cin, inputUsername);
+                        cout << "Password : "; getline(cin, inputPassword);
+                        bool status_login = false;
+                        for (int i = 0; i < jumlah_dosen; i++){
+                            if (database_dosen[i].loginDosen(inputUsername, inputPassword)) {
+                                cout << "\nLogin Berhasil! Selamat datang, " << database_dosen[i].nama << "\n";
+                                system("pause");
+                                menuDosen(i);
+                                status_login = true;
+                                break;
+                            }
+                        }
+                        if (!status_login) {
+                            cout << "\n[ERROR] Username atau Password salah!\n";
+                            system("pause");
+                        }
+                    } else if (pilihan == 0) {
+                        break;
+                    } else {
+                        cout << "\n[ERROR] Pilihan tidak valid!\n";
+                        system("pause");
+                    }
+                }
+            }
+        }
+    }
+}
+
 // ============================================================
 //   MAIN PROGRAM
 // ============================================================
 int main() {
-    int pilihan_awal;
-    while (true) {
-        system("cls");
-        banner();
-        cout << "Masuk sebagai:\n";
-        cout << "1. Mahasiswa\n";
-        cout << "2. Dosen\n";
-        cout << "0. Keluar Aplikasi\n";
-        cout << "Pilihan: ";
-        cin >> pilihan_awal;
-        cin.ignore();
-
-        if (pilihan_awal == 0) {
-            cout << "\nTerima kasih telah menggunakan sistem ini!\n";
-            break;
-        }
-
-        if (pilihan_awal == 1) {
-            int pilihan;
-            while (true) {
-                system("cls");
-                banner();
-                cout << "\n[MENU UTAMA MAHASISWA]\n";
-                cout << "1. Sign Up (Registrasi)\n";
-                cout << "2. Sign In (Login)\n";
-                cout << "0. Kembali ke Menu Utama\n";
-                cout << "Pilihan: ";
-                cin >> pilihan;
-                cin.ignore();
-
-                if (pilihan == 1) {
-                    system("cls");
-                    banner();
-                    if (jumlahMahasiswa < MAX_MHS) {
-
-                        string nama, nim, password;
-
-                        cout << "Masukan nama lengkap : ";
-                        getline(cin, nama);
-
-                        cout << "Masukan NIM : ";
-                        getline(cin, nim);
-
-                        cout << "Masukan password : ";
-                        getline(cin, password);
-
-                        char daftar_kelas[4] = {'A','B','C','D'};
-                        char kelas = daftar_kelas[jumlahMahasiswa % 4];
-
-                        database_mhs[jumlahMahasiswa].signupMahasiswa(
-                            nama,
-                            nim,
-                            password,
-                            kelas
-                        );
-
-                        cout << "[Sistem] Kelas Anda otomatis ditetapkan: "
-                            << kelas << endl;
-
-                        jumlahMahasiswa++;
-
-                        cout << "\n[+] Registrasi mahasiswa berhasil!\n";
-                    } else {
-                        cout << "\n[-] Database penuh!\n";
-                    }
-
-                    system("pause");
-                } else if (pilihan == 2) {
-                    system ("cls");
-                    banner();
-                    string nim, pass;
-
-                    cout << "NIM : ";
-                    getline(cin, nim);
-
-                    cout << "Password : ";
-                    getline(cin, pass);
-
-                    bool status_login = false;
-
-                    for(int i = 0; i < jumlahMahasiswa; i++) {
-
-                        if(database_mhs[i].loginMahasiswa(nim, pass)) {
-
-                            cout << "\nLogin berhasil! Selamat datang, "
-                                << database_mhs[i].nama_lengkap << endl;
-
-                            system("pause");
-                            menuMahasiswa(i);
-
-                            status_login = true;
-                            break;
-                        }
-                    }
-
-                    if(!status_login) {
-                        cout << "\n[ERROR] NIM atau Password salah!\n";
-                        system("pause");
-                    }
-                } else if (pilihan == 0) {
-                    break;
-                } else {
-                    cout << "\n[ERROR] Pilihan tidak valid!\n";
-                    system("pause");
-                }
-
-                
-            }
-        } else if (pilihan_awal == 2) {
-            int pilihan;
-            while (true) {
-                system("cls");
-                banner();
-                cout << "\n[MENU UTAMA DOSEN]\n";
-                cout << "1. Sign Up (Registrasi)\n";
-                cout << "2. Sign In (Login)\n";
-                cout << "0. Kembali ke Menu Utama\n";
-                cout << "Pilihan: ";
-                cin >> pilihan;
-                cin.ignore();
-
-                if (pilihan == 1) {
-                    if (jumlah_dosen < MAX_DOSEN) {
-                        string namasementara, usernamesementara, passwordsementara;
-                        cout << "\nREGISTRASI DOSEN BARU\n";
-                        cout << "Masukan nama     : "; getline(cin, namasementara);
-                        cout << "Masukan username : "; getline(cin, usernamesementara);
-                        bool username_terpakai = false;
-                        for (int i = 0; i < jumlah_dosen; i++) {
-                            if (database_dosen[i].username == usernamesementara) {
-                                username_terpakai = true;
-                                break;
-                            }
-                        }
-                        if (username_terpakai) {
-                            cout << "\n[ERROR] Username sudah digunakan, coba username lain.\n";
-                            system("pause");
-                        } else {
-                            cout << "Masukan password : "; getline(cin, passwordsementara);
-                            database_dosen[jumlah_dosen].signup_dosen(namasementara, passwordsementara, usernamesementara);
-                            cout << "\n[+] Registrasi dosen berhasil!\n";
-                            cout    << "+==============================================================+\n";
-                            cout    << "  Nama     : " << database_dosen[jumlah_dosen].nama     << "\n";
-                            cout    << "  Username : " << database_dosen[jumlah_dosen].username << "\n";
-                            cout    << "  Password : " << database_dosen[jumlah_dosen].password << "\n";
-                            cout    << "+==============================================================+\n";
-                            jumlah_dosen++;
-                        }
-                    } else {
-                        cout << "\n[ERROR] Maaf, database dosen penuh!\n";
-                        } system("pause");
-
-                } else if (pilihan == 2) {
-                   system ("cls");
-                   banner();
-                    string inputUsername, inputPassword;
-                    cout << "\n===== LOGIN DOSEN =====\n";
-                    cout << "Username : "; getline(cin, inputUsername);
-                    cout << "Password : "; getline(cin, inputPassword);
-                    bool status_login = false;
-                    for (int i = 0; i < jumlah_dosen; i++){
-                        if (database_dosen[i].loginDosen(inputUsername, inputPassword)) {
-                            cout << "\nLogin Berhasil! Selamat datang, " << database_dosen[i].nama << "\n";
-                            system("pause");
-                            menuDosen(i);
-                            status_login = true;
-                            break;
-                        }
-                    }
-                    if (!status_login) {
-                        cout << "\n[ERROR] Username atau Password salah!\n";
-                        system("pause");
-                    }
-                } else if (pilihan == 0) {
-                    break;
-                } else {
-                    cout << "\n[ERROR] Pilihan tidak valid!\n";
-                    system("pause");
-                }
-            }
-        } else {
-            cout << "\n[ERROR] Pilihan tidak valid!\n";
-            system("pause");
-        }
-    }
+    menuUtama();
     return 0;
 }
