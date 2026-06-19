@@ -488,6 +488,7 @@ void pilihMatkulDosen(Dosen* dsn) {
     if (pil >= 1 && pil <= MAKS_MK) {
         MataKuliah* mk = list_mk + (pil - 1);
 
+        // Cek apakah sudah ada di daftar ampunan dosen
         bool cek = false;
         for (int i = 0; i < dsn->jml_diampu; i++) {
             if (dsn->mk_diampu[i] == mk) {
@@ -496,20 +497,21 @@ void pilihMatkulDosen(Dosen* dsn) {
             }
         }
 
+        // Jika BELUM pernah diambil, masukkan ke dalam daftar riwayat ampunan dosen
         if (!cek) {
             int pos = dsn->jml_diampu;
             dsn->mk_diampu[pos] = mk;
-            dsn->sedang_diampu = mk;
             dsn->jml_diampu++;
-
-            cout << "Masukkan kelas yang diampu (A/B/C/D): ";
-            cin >> dsn->kls_diampu;
-            cin.ignore();
-
-            cout << "[+] Berhasil mengampu mata kuliah: " << mk->nama_mk << "\n";
-        } else {
-            cout << "[-] Anda sudah mengampu mata kuliah ini.\n";
         }
+
+        // perbarui matkul yang SEDANG AKTIF diampu saat ini
+        dsn->sedang_diampu = mk;
+
+        cout << "Masukkan kelas yang diampu (A/B/C/D): ";
+        cin >> dsn->kls_diampu;
+        cin.ignore();
+
+        cout << "[+] Berhasil mengaktifkan mata kuliah: " << mk->nama_mk << " (Kelas " << dsn->kls_diampu << ")\n";
     } else {
         cout << "[-] Pilihan tidak valid!\n";
     }
