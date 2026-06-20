@@ -854,7 +854,8 @@ void menuUtama() {
         else if (key == 13 || key == 32) { 
             if (sel == 2) {
                 system("cls");
-                cout << "\nTerima kasih telah menggunakan sistem ini!\n";
+                cout << "Terima kasih telah menggunakan SIGMA!\n";
+                system("pause");
                 break;
             }
 
