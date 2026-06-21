@@ -968,6 +968,14 @@ void menu_utama() {
                                     system("pause");
                                     continue;
                                 }
+
+                                // VALIDASI BARU: 5 karakter pertama NIM harus "F1D02"
+                                if (nim.substr(0, 5) != "F1D02") {
+                                    cout << "\n" RED "[ERROR] NIM harus diawali dengan 'F1D02' (contoh: F1D02510007)!" RESET "\n";
+                                    system("pause");
+                                    continue;
+                                }
+
                                 bool ceknim = false;
                                 for (int i = 0; i < jml_mhs; i++) {
                                     if (data_mhs[i].nim == nim) {
