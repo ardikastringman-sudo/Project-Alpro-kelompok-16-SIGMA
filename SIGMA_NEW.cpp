@@ -95,25 +95,24 @@ mata_kuliah list_mk[MAKS_MK] = {
     {5, "Matematika Diskrit"}
 };
 
-// Data Dummy Mahasiswa yang dikelompokkan mengambil kelas 'A' Matkul 'Algoritma dan Pemrograman'
+// Data Dummy Mahasiswa
 Mahasiswa data_mhs[MAKS_MHS] = {
     {"F1D02510001", "I Made Duta Atmajaya", "mhs123", 'A', {&list_mk[0], &list_mk[1]}, 2, &list_mk[0], 1},
     {"F1D02510002", "Atika Rahmadani", "mhs123", 'A', {&list_mk[0], &list_mk[2]}, 2, &list_mk[0], 1},
-    {"F1D02510003", "Muzakir Mataho", "mhs123", 'A', {&list_mk[0]}, 1, &list_mk[0], 0}, // Mataho belum melakukan pengisian absen hari ini
+    {"F1D02510003", "Muzakir Mataho", "mhs123", 'A', {&list_mk[0]}, 1, &list_mk[0], 0},
     {"F1D02510004", "Aura Permata Grasya", "mhs123", 'A', {&list_mk[0], &list_mk[1]}, 2, &list_mk[0], 1},
     {"F1D02510005", "Adelya Ega Syafa", "mhs123", 'A', {&list_mk[0], &list_mk[3]}, 2, &list_mk[0], 1},
     {"F1D02510006", "Evalinda Gracia Faozi", "mhs123", 'A', {&list_mk[0], &list_mk[1]}, 2, &list_mk[0], 1}
 };
 int jml_mhs = 6;
 
-// Data Dummy Dosen default mengampu Algoritma dan Pemrograman (Kelas A)
-// Login: Username = dsn1 , Password = dsn123
+// Data Dummy Dosen
 Dosen data_dsn[MAKS_DSN] = {
     {"Dr. Ardika Prasetyo, S.T., M.T.", "dsn1", "dsn123", {&list_mk[0]}, 1, &list_mk[0], 'A'}
 };
 int jml_dsn = 1;
 
-// Data Dummy Log Absensi Mahasiswa di sistem Dosen
+// Data Dummy Log Absensi
 Absensi data_absen[MAKS_ABSEN] = {
     {"F1D02510001", "I Made Duta Atmajaya", "Algoritma dan Pemrograman", 'A', "19-06-2026", "08:15:22", "Hadir"},
     {"F1D02510002", "Atika Rahmadani", "Algoritma dan Pemrograman", 'A', "19-06-2026", "08:18:45", "Hadir"},
@@ -124,26 +123,23 @@ Absensi data_absen[MAKS_ABSEN] = {
 int jml_absen = 5;
 
 bool buka_absen = false;
-Dosen* dsn_aktif = nullptr;        // pointer ke dosen pemilik sesi aktif
-mata_kuliah* mk_aktif = nullptr;    // pointer ke matkul yang sesi-nya aktif
+Dosen* dsn_aktif = nullptr;        
+mata_kuliah* mk_aktif = nullptr;    
 char kls_aktif;
 
 // ============================================================
 //   PROTOTIPE FUNGSI
 // ============================================================
 void cetak_banner();
-
 void menu_mahasiswa(Mahasiswa* mhs);
 void mhs_pilih_mk(Mahasiswa* mhs);
 void mhs_absen(Mahasiswa* mhs);
 void histori_mhs(Mahasiswa* mhs);
-
 void menu_dosen(Dosen* dsn);
 void pilih_matkul_dosen(Dosen* dsn);
 void dsn_buka_absen(Dosen* dsn);
 void tutup_absensi();
 void riwayat_dosen(Dosen* dsn);
-
 void tampil_matkul();
 void menu_edit_mhs();
 void lihat_data_mhs();
@@ -156,7 +152,6 @@ void menu_utama();
 Mahasiswa* cari_login_mahasiswa(const string &nim, const string &pass);
 Dosen* cari_login_dosen(const string &usn, const string &pass);
 
-// Fungsi Perapi Tampilan Tengah
 string format_teks_tengah(string teks, int lebar_kotak);
 void cetak_baris_tengah(string baris_teks, int lebar_terminal);
 
@@ -494,7 +489,6 @@ void pilih_matkul_dosen(Dosen* dsn) {
     if (pil >= 1 && pil <= MAKS_MK) {
         mata_kuliah* mk = list_mk + (pil - 1);
 
-        // Cek apakah sudah ada di daftar ampunan dosen
         bool cek = false;
         for (int i = 0; i < dsn->jml_diampu; i++) {
             if (dsn->mk_diampu[i] == mk) {
@@ -503,14 +497,12 @@ void pilih_matkul_dosen(Dosen* dsn) {
             }
         }
 
-        // Jika BELUM pernah diambil, masukkan ke dalam daftar riwayat ampunan dosen
         if (!cek) {
             int pos = dsn->jml_diampu;
             dsn->mk_diampu[pos] = mk;
             dsn->jml_diampu++;
         }
 
-        // perbarui matkul yang SEDANG AKTIF diampu saat ini
         dsn->sedang_diampu = mk;
 
         cout << "Masukkan kelas yang diampu (A/B/C/D): ";
@@ -599,7 +591,6 @@ void riwayat_dosen(Dosen* dsn) {
 
     bool ada_mahasiswa = false;
 
-    // Loop data_mhs untuk melacak siapa saja yang mengambil matkul dosen bersangkutan
     for (int i = 0; i < jml_mhs; i++) {
         Mahasiswa* m = &data_mhs[i];
         
@@ -617,7 +608,6 @@ void riwayat_dosen(Dosen* dsn) {
                 cout << "NIM  : " << m->nim << "\n";
                 cout << "Nama : " << m->nama_mhs << "\n";
 
-                // Cek apakah mahasiswa ini datanya ada di log array data_absen
                 bool sudah_absen = false;
                 string status_kehadiran = "Belum Mengisi Absen";
                 string waktu_absen = "-";
@@ -662,10 +652,11 @@ void menu_edit_mhs() {
     int pil;
     cout << "Pilihan: ";
     cin >> pil;
+    cin.ignore();
 
     switch (pil) {
         case 1:
-            system ("cls");
+            system("cls");
             lihat_data_mhs();
             system("pause");
             break;
@@ -679,7 +670,8 @@ void menu_edit_mhs() {
         case 0:
             return;
         default:
-            cout << "Input tidak valid!";
+            cout << "Input tidak valid!\n";
+            system("pause");
     }
 }
 
@@ -866,6 +858,9 @@ void menu_utama() {
             if (key == 80) { sel++; if (sel >= total_menu) sel = 0; }    
         }
         else if (key == 13 || key == 32) { 
+            // PERBAIKAN: Bersihkan sisa karakter Enter setelah _getch() sebelum masuk input data stream
+            cin.clear();
+
             if (sel == 2) {
                 system("cls");
                 cout << "Terima kasih telah menggunakan SIGMA!\n";
@@ -905,6 +900,8 @@ void menu_utama() {
                         if (sub_key == 80) { sel_sub++; if (sel_sub >= total_menu) sel_sub = 0; }   
                     }
                     else if (sub_key == 13 || sub_key == 32) {
+                        cin.clear();
+
                         if (sel_sub == 0) { // Sign Up Mahasiswa
                             system("cls");
                             cetak_banner();
@@ -915,7 +912,6 @@ void menu_utama() {
                                 cout << "\nMasukan nama lengkap : ";
                                 getline(cin, nama);
                                 
-                                // Validasi Nama Mahasiswa (Hanya huruf dan spasi)
                                 if (nama.length() == 0) valid = false;
                                 for (size_t idx = 0; idx < nama.length(); idx++) {
                                     char c = nama[idx];
@@ -933,7 +929,6 @@ void menu_utama() {
                                 cout << "Masukan NIM          : ";
                                 getline(cin, nim);
                                 
-                                // Validasi NIM Mahasiswa (Harus tepat 11 karakter)
                                 if (nim.length() != 11) {
                                     cout << "\n[ERROR] NIM harus berisi tepat 11 karakter!\n";
                                     system("pause");
@@ -943,7 +938,6 @@ void menu_utama() {
                                 cout << "Masukan password     : ";
                                 getline(cin, password);
                                 
-                                // Validasi Password kosong
                                 if (password.length() == 0) {
                                     cout << "\n[ERROR] Password tidak boleh kosong!\n";
                                     system("pause");
@@ -972,7 +966,6 @@ void menu_utama() {
                             cout << "Password : ";
                             getline(cin, pass_login);
 
-                            // Validasi Input Kosong pas Sign In
                             if (nim_login.length() == 0 || pass_login.length() == 0) {
                                 cout << "\n[ERROR] NIM dan Password tidak boleh kosong!\n";
                                 system("pause");
@@ -1028,6 +1021,8 @@ void menu_utama() {
                         if (sub_key == 80) { sel_sub++; if (sel_sub >= total_menu) sel_sub = 0; }   
                     }
                     else if (sub_key == 13 || sub_key == 32) {
+                        cin.clear();
+
                         if (sel_sub == 0) { // Sign Up Dosen
                             system("cls");
                             cetak_banner();
@@ -1038,7 +1033,6 @@ void menu_utama() {
                                 cout << "\nREGISTRASI DOSEN BARU\n";
                                 cout << "Masukan nama     : "; getline(cin, namas);
                                 
-                                // Validasi Nama Dosen (Hanya huruf dan spasi)
                                 if (namas.length() == 0) valid_dsn = false;
                                 for (size_t idx = 0; idx < namas.length(); idx++) {
                                     char c = namas[idx];
@@ -1073,7 +1067,6 @@ void menu_utama() {
                                 } else {
                                     cout << "Masukan password : "; getline(cin, passwords);
                                     
-                                    // Validasi password kosong
                                     if (passwords.length() == 0) {
                                         cout << "\n[ERROR] Password tidak boleh kosong!\n";
                                         system("pause");
@@ -1103,7 +1096,6 @@ void menu_utama() {
                             cout << "Username : "; getline(cin, usn_login);
                             cout << "Password : "; getline(cin, pass_login);
 
-                            // Validasi Input Kosong pas Sign In Dosen
                             if (usn_login.length() == 0 || pass_login.length() == 0) {
                                 cout << "\n[ERROR] Username dan Password tidak boleh kosong!\n";
                                 system("pause");
