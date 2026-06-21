@@ -954,6 +954,19 @@ void menu_utama() {
                                     system("pause");
                                     continue;
                                 }
+                                bool ceknim = false;
+                                for (int i = 0; i < jml_mhs; i++) {
+                                    if (data_mhs[i].nim == nim) {
+                                        ceknim = true;
+                                        break;
+                                    }
+                                }
+
+                                if (ceknim) {
+                                    cout << "\n" RED "[ERROR] NIM sudah terdaftar! Silakan login atau gunakan NIM lain." RESET "\n";
+                                    system("pause");
+                                    continue;
+                                }
 
                                 cout << "Masukan password     : ";
                                 getline(cin, password);
