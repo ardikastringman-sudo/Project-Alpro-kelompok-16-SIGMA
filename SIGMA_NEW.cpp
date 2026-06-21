@@ -253,24 +253,24 @@ Dosen* cari_login_dosen(const string &usn, const string &pass) {
 }
 
 void cetak_banner() {
-    cout << "+==============================================================+\n";
-    cout << NAVY_BLUE  "|          :####:   ######   :####:   ###  ###     :##:        |\n";
-    cout << NAVY_BLUE  "|         :######   ######   ######   ###  ###      ##         |\n";
-    cout << NAVY_BLUE  "|        ##:   :#     ##    :##: .#   ###::###     ####        |\n";
-    cout << BLUE_LIGHT "|        ##           ##    ##:       ###  ###     ####        |\n";
-    cout << BLUE_LIGHT "|        ###:         ##    ##.       ## ## ##    :#  #:       |\n";
-    cout << BLUE_LIGHT "|        :#####:      ##    ##        ##:##:##     #::#        |\n";
-    cout << CYAN_TEAL  "|         .#####:     ##    ##  ####  ##.##.##    ##  ##       |\n";
-    cout << CYAN_TEAL  "|             :###    ##    ##. ####  ## ## ##    ######       |\n";
-    cout << CYAN_TEAL  "|               ##    ##    ##:   ##  ##    ##   .######.      |\n";
-    cout << ICE_BLUE   "|        #:.    :##   ##   :##:   ##  ##    ##   :##  ##:      |\n";
-    cout << ICE_BLUE   "|         #######:  ######  #######   ##    ##   ###  ###      |\n";
-    cout << ICE_BLUE   "|         .#####:   ######   :####.   ##    ##   ##:  :##      |\n";
+    cout << "+=======================================================================+\n";
+    cout << NAVY_BLUE  "|          :####:   ######   :####:   ###  ###     :##:                 |\n";
+    cout << NAVY_BLUE  "|         :######   ######   ######   ###  ###      ##                  |\n";
+    cout << NAVY_BLUE  "|        ##:   :#     ##    :##: .#   ###::###     ####                 |\n";
+    cout << BLUE_LIGHT "|        ##           ##    ##:       ###  ###     ####                 |\n";
+    cout << BLUE_LIGHT "|        ###:         ##    ##.       ## ## ##    :#  #:                |\n";
+    cout << BLUE_LIGHT "|        :#####:      ##    ##        ##:##:##     #::#                 |\n";
+    cout << CYAN_TEAL  "|         .#####:     ##    ##  ####  ##.##.##    ##  ##                |\n";
+    cout << CYAN_TEAL  "|             :###    ##    ##. ####  ## ## ##    ######                |\n";
+    cout << CYAN_TEAL  "|               ##    ##    ##:   ##  ##    ##   .######.               |\n";
+    cout << ICE_BLUE   "|        #:.    :##   ##   :##:   ##  ##    ##   :##  ##:               |\n";
+    cout << ICE_BLUE   "|         #######:  ######  #######   ##    ##   ###  ###               |\n";
+    cout << ICE_BLUE   "|         .#####:   ######   :####.   ##    ##   ##:  :##               |\n";
     cout << RESET;
-    cout << "+==============================================================+\n";
-    cout << NAVY_BLUE "|                SISTEM GUNA ABSENSI MAHASISWA                 |\n";
+    cout << "+======================================================================+\n";
+    cout << NAVY_BLUE "|                SISTEM GUNA ABSENSI MAHASISWA                          |\n";
     cout << RESET;
-    cout << "+==============================================================+\n";
+    cout << "+======================================================================+\n";
 }
 
 // ============================================================
@@ -860,11 +860,11 @@ void menu_utama() {
         system("cls");
         cetak_banner();
         
-        string info_str = "Data Mhs: " + to_string(jml_mhs) + "/" + to_string(MAKS_MHS)
-               + " | Data Dsn: " + to_string(jml_dsn) + "/" + to_string(MAKS_DSN)
+        string info_str = "Data Mahasiswa: " + to_string(jml_mhs) + "/" + to_string(MAKS_MHS)
+               + " | Data Dosen: " + to_string(jml_dsn) + "/" + to_string(MAKS_DSN)
                + " | Panah: navigasi | Enter: pilih";
         cetak_baris_tengah(info_str, lebar_terminal);
-        cetak_baris_tengah("---------------------------------------------------------------", lebar_terminal);
+        cetak_baris_tengah("-----------------------------------------------------------------------", lebar_terminal);
         cout << endl;
 
         string pembatas = "+";
