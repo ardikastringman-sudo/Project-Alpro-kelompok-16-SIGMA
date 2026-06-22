@@ -19,7 +19,7 @@
 | **Adelya Ega Syafa**           | F1D02510033|
 | **Atika Rahmadani**            | F1D02510039|
 | **Evalinda Gracia Faozi**      | F1D02510048|
-| **I Made Duta Atmajaya**       | F1D02510109|
+| **I Made Duta Atmajaya**       | F1D02510056|
 
 -----------------------------------------------
 
@@ -27,7 +27,7 @@
 ## Struktur Proyek
 
 ```
-Judul/
+SIGMA (Sistem Informasi Guna Manajemen Absensi)
 ├── Sign In
 │   AS Mahasiswa
 │   ├── Pilih Mata Kuliah
