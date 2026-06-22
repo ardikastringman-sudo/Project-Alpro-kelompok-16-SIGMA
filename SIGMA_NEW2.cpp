@@ -158,17 +158,26 @@ void cetak_baris_tengah(string baris_teks, int lebar_terminal);
 // ============================================================
 //   FUNGSI UTILITAS / HELPERS TAMPILAN TENGAH
 // ============================================================
-string format_teks_tengah(string teks, int lebar_kotak) {
-    int panjang_murni = 0;
+int hitung_panjang_asli(const string& teks) {
+    int panjang = 0;
+    bool dalam_ansi = false;
     for (size_t i = 0; i < teks.length(); i++) {
         if (teks[i] == '\033') {
-            while (i < teks.length() && teks[i] != 'm') {
-                i++;
-            }
-        } else {
-            panjang_murni++;
+            dalam_ansi = true;
         }
+        if (dalam_ansi) {
+            if (teks[i] == 'm') {
+                dalam_ansi = false;
+            }
+            continue; 
+        }
+        panjang++;
     }
+    return panjang;
+}
+
+string format_teks_tengah(string teks, int lebar_kotak) {
+    int panjang_murni = hitung_panjang_asli(teks);
 
     if (panjang_murni >= lebar_kotak) return teks;
 
@@ -177,28 +186,14 @@ string format_teks_tengah(string teks, int lebar_kotak) {
     int spasi_kanan = sisa_spasi - spasi_kiri;
 
     string hasil = "";
-    for (int i = 0; i < spasi_kiri; i++) {
-        hasil += " ";
-    }
+    for (int i = 0; i < spasi_kiri; i++) hasil += " ";
     hasil += teks;
-    for (int i = 0; i < spasi_kanan; i++) {
-        hasil += " ";
-    }
+    for (int i = 0; i < spasi_kanan; i++) hasil += " ";
     return hasil;
 }
 
 void cetak_baris_tengah(string baris_teks, int lebar_terminal) {
-    int panjang_murni = 0;
-    for (size_t i = 0; i < baris_teks.length(); i++) {
-        if (baris_teks[i] == '\033') {
-            while (i < baris_teks.length() && baris_teks[i] != 'm') {
-                i++;
-            }
-        } else {
-            panjang_murni++;
-        }
-    }
-
+    int panjang_murni = hitung_panjang_asli(baris_teks);
     int spasi_pendorong = (lebar_terminal - panjang_murni) / 2;
     if (spasi_pendorong < 0) spasi_pendorong = 0;
 
@@ -253,24 +248,24 @@ Dosen* cari_login_dosen(const string &usn, const string &pass) {
 }
 
 void cetak_banner() {
-    cout << "+==============================================================+\n";
-    cout << NAVY_BLUE  "|          :####:   ######   :####:   ###  ###     :##:        |\n";
-    cout << NAVY_BLUE  "|         :######   ######   ######   ###  ###      ##         |\n";
-    cout << NAVY_BLUE  "|        ##:   :#     ##    :##: .#   ###::###     ####        |\n";
-    cout << BLUE_LIGHT "|        ##           ##    ##:       ###  ###     ####        |\n";
-    cout << BLUE_LIGHT "|        ###:         ##    ##.       ## ## ##    :#  #:       |\n";
-    cout << BLUE_LIGHT "|        :#####:      ##    ##        ##:##:##     #::#        |\n";
-    cout << CYAN_TEAL  "|         .#####:     ##    ##  ####  ##.##.##    ##  ##       |\n";
-    cout << CYAN_TEAL  "|             :###    ##    ##. ####  ## ## ##    ######       |\n";
-    cout << CYAN_TEAL  "|               ##    ##    ##:   ##  ##    ##   .######.      |\n";
-    cout << ICE_BLUE   "|        #:.    :##   ##   :##:   ##  ##    ##   :##  ##:      |\n";
-    cout << ICE_BLUE   "|         #######:  ######  #######   ##    ##   ###  ###      |\n";
-    cout << ICE_BLUE   "|         .#####:   ######   :####.   ##    ##   ##:  :##      |\n";
+    cout << "+======================================================================+\n";
+    cout << NAVY_BLUE  "|             :####:   ######   :####:   ###  ###     :##:             |\n";
+    cout << NAVY_BLUE  "|            :######   ######   ######   ###  ###      ##              |\n";
+    cout << NAVY_BLUE  "|           ##:   :#     ##    :##: .#   ###::###     ####             |\n";
+    cout << BLUE_LIGHT "|           ##           ##    ##:       ###  ###     ####             |\n";
+    cout << BLUE_LIGHT "|           ###:         ##    ##.       ## ## ##    :#  #:            |\n";
+    cout << BLUE_LIGHT "|           :#####:      ##    ##        ##:##:##     #::#             |\n";
+    cout << CYAN_TEAL  "|            .#####:     ##    ##  ####  ##.##.##    ##  ##            |\n";
+    cout << CYAN_TEAL  "|                :###    ##    ##. ####  ## ## ##    ######            |\n";
+    cout << CYAN_TEAL  "|                  ##    ##    ##:   ##  ##    ##   .######.           |\n";
+    cout << ICE_BLUE   "|           #:.    :##   ##   :##:   ##  ##    ##   :##  ##:           |\n";
+    cout << ICE_BLUE   "|            #######:  ######  #######   ##    ##   ###  ###           |\n";
+    cout << ICE_BLUE   "|            .#####:   ######   :####.   ##    ##   ##:  :##           |\n";
     cout << RESET;
-    cout << "+==============================================================+\n";
-    cout << NAVY_BLUE "|                SISTEM GUNA ABSENSI MAHASISWA                 |\n";
+    cout << "+======================================================================+\n";
+    cout << NAVY_BLUE "|                     SISTEM GUNA ABSENSI MAHASISWA                    |\n";
     cout << RESET;
-    cout << "+==============================================================+\n";
+    cout << "+======================================================================+\n";
 }
 
 // ============================================================
@@ -303,7 +298,7 @@ void menu_mahasiswa(Mahasiswa* mhs) {
             case 0:
                 return;
             default:
-                cout << "Pilihan tidak valid!\n";
+                cout << "\n" RED "[ERROR] Pilihan tidak valid!" RESET "\n";
                 system("pause");
         }
     }
@@ -315,6 +310,15 @@ void mhs_pilih_mk(Mahasiswa* mhs) {
     tampil_matkul();
     cout << "\nPilih nomor mata kuliah yang ingin diambil: ";
     int pil; cin >> pil; 
+
+    if (cin.fail()) {
+        cin.clear();            
+        while (cin.get() != '\n'); 
+        cout << "\n" RED "[ERROR] Input harus berupa angka pilihan yang valid!" RESET "\n";
+        system("pause");
+        return;                 
+    }
+
     while (cin.get() != '\n'); // PENGGANTI LIMITS
 
     if (pil >= 1 && pil <= MAKS_MK) {
@@ -352,7 +356,7 @@ void mhs_pilih_mk(Mahasiswa* mhs) {
             cout << "[-] Mata kuliah ini sudah Anda ambil sebelumnya.\n";
         }
     } else {
-        cout << "[-] Pilihan tidak valid!\n";
+        cout << "\n" RED "[ERROR] Pilihan tidak valid!\n" RESET;
     }
     system("pause");
 }
@@ -408,7 +412,7 @@ void mhs_absen(Mahasiswa* mhs) {
         case 2: ket_status = "Izin"; break;
         case 3: ket_status = "Sakit"; break;
         default:
-            cout << "\nPilihan tidak valid! Absen dibatalkan.\n";
+            cout << "\n" RED "[ERROR] Pilihan tidak valid! Absen dibatalkan." RESET "\n";
             system("pause");
             return;
     }
@@ -483,7 +487,7 @@ void menu_dosen(Dosen* dsn) {
         else if (pil == 5) menu_edit_mhs();
         else if (pil == 0) break;
         else {
-            cout << "Pilihan tidak valid!\n";
+            cout << "\n" RED "[ERROR] Pilihan tidak valid!" RESET "\n";
             system("pause");
         }
     }
@@ -546,7 +550,7 @@ void pilih_matkul_dosen(Dosen* dsn) {
 
         cout << "[+] Berhasil mengaktifkan mata kuliah: " << mk->nama_mk << " (Kelas " << dsn->kls_diampu << ")\n";
     } else {
-        cout << "[-] Pilihan tidak valid!\n";
+        cout << "\n" RED "[ERROR] Pilihan tidak valid!" RESET "\n";
     }
     system("pause");
 }
@@ -705,7 +709,7 @@ void menu_edit_mhs() {
         case 0:
             return;
         default:
-            cout << "Input tidak valid!\n";
+            cout << "\n" RED "[ERROR] Input tidak valid!" RESET "\n";
             system("pause");
     }
 }
@@ -755,7 +759,7 @@ void hapus_mahasiswa() {
     while (cin.get() != '\n'); // PENGGANTI LIMITS
 
     if (pil < 1 || pil > jml_mhs) {
-        cout << "\nPilihan tidak valid!\n";
+        cout << "\n" RED "[ERROR] Pilihan tidak valid!" RESET "\n";
         system("pause");
         return;
     }
@@ -783,10 +787,14 @@ void hapus_matkul_mahasiswa() {
     int pil;
     cout << "\nPilih nomor mahasiswa : ";
     cin >> pil;
-    while (cin.get() != '\n'); // PENGGANTI LIMITS
+    if(cin.fail()) {cin.clear(); 
+    while (cin.get() != '\n'); 
+    cout << "\n" RED "[ERROR] Input harus berupa angka pilihan yang valid!" RESET "\n"; 
+    system("pause"); 
+    return;}
 
     if (pil < 1 || pil > jml_mhs) {
-        cout << "\nPilihan tidak valid!\n";
+        cout << "\n" RED "[ERROR] Pilihan tidak valid!" RESET "\n";
         system("pause");
         return;
     }
@@ -811,7 +819,7 @@ void hapus_matkul_mahasiswa() {
     while (cin.get() != '\n'); // PENGGANTI LIMITS
 
     if (pil_mk < 1 || pil_mk > mhs->jml_mk) {
-        cout << "\nPilihan tidak valid!\n";
+        cout << "\n" RED "[ERROR] Pilihan tidak valid!" RESET "\n";
         system("pause");
         return;
     }
@@ -839,14 +847,14 @@ void hapus_matkul_mahasiswa() {
 void menu_utama() {
     string opsi[] = {
         "MASUK SEBAGAI MAHASISWA",
-        "  MASUK SEBAGAI DOSEN  ",
-        "    KELUAR APLIKASI    "
+        "MASUK SEBAGAI DOSEN",
+        "KELUAR APLIKASI"
     };
 
     string opsi_sub_menu[] = {
         "SIGN UP (REGISTRASI)",
-        "  SIGN IN (LOGIN)   ",
-        "      KEMBALI       "
+        "SIGN IN (LOGIN)",
+        "KEMBALI"
     };
 
     int sel = 0;
@@ -854,29 +862,35 @@ void menu_utama() {
     const int total_menu = 3;
     
     int lebar_kotak = 46;       
-    int lebar_terminal = 66;   
+    int lebar_terminal = 70; 
 
     while (true) {
         system("cls");
         cetak_banner();
+      
+        string info_str = "Data Mhs: " + to_string(jml_mhs) + "/" + to_string(MAKS_MHS)
+               + " | Data Dsn: " + to_string(jml_dsn) + "/" + to_string(MAKS_DSN)
+               + " | Panah: navigasi | Enter: pilih";
         
-        string info_str = "Data Mhs: " + to_string(jml_mhs) + "/" + to_string(MAKS_MHS) + "  |  Panah: navigasi  |  Enter: pilih";
         cetak_baris_tengah(info_str, lebar_terminal);
-        cetak_baris_tengah("---------------------------------------------------------------", lebar_terminal);
+        cetak_baris_tengah("------------------------------------------------------------------------", lebar_terminal);
         cout << endl;
 
         string pembatas = "+";
         for(int i = 0; i < lebar_kotak; i++) pembatas += "=";
         pembatas += "+";
 
+        // Tampilan Menu Utama 
         for (int i = 0; i < total_menu; i++) {
             cetak_baris_tengah(pembatas, lebar_terminal);
             if (i == sel) {
                 string format_opsi = " >> " + opsi[i] + " << ";
                 if (i == 2) {
-                    cetak_baris_tengah("|" + format_teks_tengah(string(RED) + format_opsi + RESET, lebar_kotak) + "|", lebar_terminal);
+                    string konten_warna = string(RED) + format_opsi + string(RESET);
+                    cetak_baris_tengah("|" + format_teks_tengah(konten_warna, lebar_kotak) + "|", lebar_terminal);
                 } else {
-                    cetak_baris_tengah("|" + format_teks_tengah(string(BLUE_LIGHT) + format_opsi + RESET, lebar_kotak) + "|", lebar_terminal);
+                    string konten_warna = string(BLUE_LIGHT) + format_opsi + string(RESET);
+                    cetak_baris_tengah("|" + format_teks_tengah(konten_warna, lebar_kotak) + "|", lebar_terminal);
                 }
             } else {
                 cetak_baris_tengah("|" + format_teks_tengah(opsi[i], lebar_kotak) + "|", lebar_terminal);
@@ -884,7 +898,7 @@ void menu_utama() {
         }
         cetak_baris_tengah(pembatas, lebar_terminal);
         cout << endl;
-        cetak_baris_tengah("---------------------------------------------------------------", lebar_terminal);
+        cetak_baris_tengah("------------------------------------------------------------------------", lebar_terminal);
 
         key = _getch();
         if (key == 0 || key == (char)224) {
@@ -893,11 +907,10 @@ void menu_utama() {
             if (key == 80) { sel++; if (sel >= total_menu) sel = 0; }    
         }
         else if (key == 13 || key == 32) { 
-            cin.clear();
 
             if (sel == 2) {
                 system("cls");
-                cout << "Terima kasih telah menggunakan SIGMA!\n";
+                cout << NAVY_BLUE "Terima kasih telah menggunakan SIGMA!\n" RESET;
                 system("pause");
                 break;
             }
@@ -917,9 +930,11 @@ void menu_utama() {
                         if (i == sel_sub) {
                             string format_sub = " >> " + opsi_sub_menu[i] + " << ";
                             if (i == 2) {
-                                cetak_baris_tengah("|" + format_teks_tengah(string(RED) + format_sub + RESET, lebar_kotak) + "|", lebar_terminal);
+                                string konten_warna = string(RED) + format_sub + string(RESET);
+                                cetak_baris_tengah("|" + format_teks_tengah(konten_warna, lebar_kotak) + "|", lebar_terminal);
                             } else {
-                                cetak_baris_tengah("|" + format_teks_tengah(string(BLUE_LIGHT) + format_sub + RESET, lebar_kotak) + "|", lebar_terminal);
+                                string konten_warna = string(BLUE_LIGHT) + format_sub + string(RESET);
+                                cetak_baris_tengah("|" + format_teks_tengah(konten_warna, lebar_kotak) + "|", lebar_terminal);
                             }
                         } else {
                             cetak_baris_tengah("|" + format_teks_tengah(opsi_sub_menu[i], lebar_kotak) + "|", lebar_terminal);
@@ -968,14 +983,6 @@ void menu_utama() {
                                     system("pause");
                                     continue;
                                 }
-
-                                // VALIDASI BARU: 5 karakter pertama NIM harus "F1D02"
-                                if (nim.substr(0, 5) != "F1D02") {
-                                    cout << "\n" RED "[ERROR] NIM harus diawali dengan 'F1D02' (contoh: F1D02510007)!" RESET "\n";
-                                    system("pause");
-                                    continue;
-                                }
-
                                 bool ceknim = false;
                                 for (int i = 0; i < jml_mhs; i++) {
                                     if (data_mhs[i].nim == nim) {
@@ -1059,9 +1066,11 @@ void menu_utama() {
                         if (i == sel_sub) {
                             string format_sub = " >> " + opsi_sub_menu[i] + " << ";
                             if (i == 2) {
-                                cetak_baris_tengah("|" + format_teks_tengah(string(RED) + format_sub + RESET, lebar_kotak) + "|", lebar_terminal);
+                                string konten_warna = string(RED) + format_sub + string(RESET);
+                                cetak_baris_tengah("|" + format_teks_tengah(konten_warna, lebar_kotak) + "|", lebar_terminal);
                             } else {
-                                cetak_baris_tengah("|" + format_teks_tengah(string(BLUE_LIGHT) + format_sub + RESET, lebar_kotak) + "|", lebar_terminal);
+                                string konten_warna = string(BLUE_LIGHT) + format_sub + string(RESET);
+                                cetak_baris_tengah("|" + format_teks_tengah(konten_warna, lebar_kotak) + "|", lebar_terminal);
                             }
                         } else {
                             cetak_baris_tengah("|" + format_teks_tengah(opsi_sub_menu[i], lebar_kotak) + "|", lebar_terminal);
