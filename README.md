@@ -5,7 +5,7 @@
 
 ## Deskripsi
 
-**SIGMA** adalah sistem absensi yang berbasis antarmuka baris perintah menggunakan bahasa pemrograman C++. 
+**SIGMA** merupakan aplikasi berbasis Command Line Interface (CLI) yang dikembangkan menggunakan bahasa pemrograman C++ untuk membantu pengelolaan absensi mahasiswa secara digital. Program ini menyediakan fitur autentikasi berupa Sign Up dan Sign In untuk mahasiswa dan dosen, pemilihan mata kuliah, pembukaan dan penutupan sesi absensi oleh dosen, pengisian absensi dengan status hadir, izin, atau sakit oleh mahasiswa, serta riwayat kehadiran yang dapat dipantau oleh kedua pengguna. Sistem juga dilengkapi berbagai validasi untuk menjaga keakuratan data, seperti pembatasan absensi hanya saat sesi dibuka dan pencegahan absensi ganda. Dalam implementasinya, program memanfaatkan struktur data struct, array, dan pointer untuk mengelola data mahasiswa, dosen, mata kuliah, dan absensi secara efisien, serta didukung tampilan CLI berwarna dan navigasi menu menggunakan tombol panah agar lebih interaktif dan mudah digunakan.
 
 -----------------------------------------------
 
