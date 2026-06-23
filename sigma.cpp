@@ -1,4 +1,4 @@
-#include <iostream>
+ #include <iostream>
 #include <string>
 #include <ctime>
 #include <conio.h>
@@ -287,15 +287,15 @@ void menu_mahasiswa(Mahasiswa* mhs) { //ini dah diganti
 
         if (pil=='1') {
             mhs_pilih_mk(mhs);
-            break;
+            
         }
         else if (pil == '2') {
             mhs_absen(mhs);
-            break;
+            
         }
         else if (pil == '3') {
             histori_mhs(mhs);
-            break;
+            
         }
         else if (pil == '0') {
             break;
@@ -405,6 +405,7 @@ void mhs_absen(Mahasiswa* mhs) {
     cout << "3. Sakit\n";
     cout << "Pilih status (1-3): ";
     cin >> pil_ket;
+    
     while (cin.get() != '\n'); // PENGGANTI LIMITS
 
     string ket_status;
@@ -485,23 +486,23 @@ void menu_dosen(Dosen* dsn) {
 
         if (pil == '1'){
             pilih_matkul_dosen(dsn);
-            break;
+            
         } 
         else if (pil == '2') {
             dsn_buka_absen(dsn);
-            break;
+            
         }
         else if (pil == '3') {
             tutup_absensi();
-            break;
+            
         }
         else if (pil == '4') {
             riwayat_dosen(dsn);
-            break;
+            
         }
         else if (pil == '5') {
             menu_edit_mhs();
-            break;
+            
         }
         else if (pil == '0') {
             break;
@@ -524,6 +525,14 @@ void pilih_matkul_dosen(Dosen* dsn) {
     tampil_matkul();
     cout << "\nPilih nomor mata kuliah yang ingin diampu: ";
     int pil; cin >> pil; 
+    if (cin.fail()) {
+        cin.clear();           
+        while (cin.get() != '\n'); 
+        cout << "\n" RED "[ERROR] Input harus berupa angka pilihan yang valid!" RESET "\n";
+        system("pause");
+        return;                 
+    }
+
     while (cin.get() != '\n'); // PENGGANTI LIMITS
 
     if (pil >= 1 && pil <= MAKS_MK) {
@@ -566,6 +575,7 @@ void pilih_matkul_dosen(Dosen* dsn) {
                 }
             }
             cout << RED "[ERROR] Input tidak valid! Harap masukkan satu huruf kelas (A, B, C, atau D)." RESET << endl;
+            system("pause");
         }
 
         cout << "[+] Berhasil mengaktifkan mata kuliah: " << mk->nama_mk << " (Kelas " << dsn->kls_diampu << ")\n";
@@ -701,37 +711,59 @@ void riwayat_dosen(Dosen* dsn) {
 //   EDIT DAN HAPUS
 // ============================================================
 void menu_edit_mhs() {
-    system("cls");
-    cetak_banner();
-    cout << "\n===== EDIT DATA MAHASISWA =====\n" << endl;
-    cout << "1. Lihat Data Mahasiswa\n";
-    cout << "2. Hapus Data Mahasiswa\n";
-    cout << "3. Hapus Mata Kuliah Mahasiswa\n";
-    cout << "0. Kembali\n";
-    int pil;
-    cout << "Pilihan: ";
-    cin >> pil;
-    while (cin.get() != '\n'); // PENGGANTI LIMITS
+    
+    while (true){
+        system("cls");
+        cetak_banner();
+        cout << "\n===== EDIT DATA MAHASISWA =====\n" << endl;
+        cout << "1. Lihat Data Mahasiswa\n";
+        cout << "2. Hapus Data Mahasiswa\n";
+        cout << "3. Hapus Mata Kuliah Mahasiswa\n";
+        cout << "0. Kembali\n";
+        int pil;
+        cout << "Pilihan: ";
+        cin >> pil;
+        if (cin.fail()) {
+            cin.clear();            
+            while (cin.get() != '\n'); 
+            cout << "\n" RED "[ERROR] Input harus berupa angka pilihan yang valid!" RESET "\n";
+            system("pause");
+            continue;       
+        }
+        while (cin.get() != '\n'); // PENGGANTI LIMITS
 
-    switch (pil) {
-        case '1':
-            system("cls");
-            lihat_data_mhs();
-            system("pause");
-            break;
-        case '2'   :
-            hapus_mahasiswa();
-            break;
-        case '3':
-            system("cls");
-            hapus_matkul_mahasiswa();
-            break;
-        case '0':
-            return;
-        default:
-            cout << "\n" RED "[ERROR] Input tidak valid!" RESET "\n";
-            system("pause");
+        switch (pil) {
+            case 1:
+                system("cls");
+                lihat_data_mhs();
+                system("pause");
+                break;
+                
+            case 2:
+                system("cls");
+                hapus_mahasiswa();
+                
+                break;
+            
+            case 3:
+                system("cls");
+                hapus_matkul_mahasiswa();
+                
+                break;
+        
+            case 0:
+                return;
+            default:
+                cout << "\n" RED "[ERROR] Input tidak valid!" RESET "\n";
+                system("pause");
+                break;
+
+            
+        }
+        
     }
+    
+    
 }
 
 void lihat_data_mhs() {
@@ -776,6 +808,13 @@ void hapus_mahasiswa() {
     int pil;
     cout << "\nPilihan nomor mahasiswa yang akan dihapus : ";
     cin >> pil;
+    if (cin.fail()) {
+        cin.clear();            
+        while (cin.get() != '\n'); 
+        cout << "\n" RED "[ERROR] Input harus berupa angka pilihan yang valid!" RESET "\n";
+        system("pause");
+        return;        
+    }
     while (cin.get() != '\n'); // PENGGANTI LIMITS
 
     if (pil < 1 || pil > jml_mhs) {
@@ -836,6 +875,13 @@ void hapus_matkul_mahasiswa() {
     int pil_mk;
     cout << "\nPilih mata kuliah yang akan dihapus : ";
     cin >> pil_mk;
+    if (cin.fail()) {
+        cin.clear();          
+        while (cin.get() != '\n'); 
+        cout << "\n" RED "[ERROR] Input harus berupa angka pilihan yang valid!" RESET "\n";
+        system("pause");
+        return;                
+    }
     while (cin.get() != '\n'); // PENGGANTI LIMITS
 
     if (pil_mk < 1 || pil_mk > mhs->jml_mk || cin.fail()) {
@@ -1005,7 +1051,16 @@ void menu_utama() {
                                         break;
                                     }
                                 }
-                                if (nim[0] != 'F' || nim[1] != '1' || nim[2] != 'D' || nim[3] != '0' || nim[4] != '2') {
+                                if (nim.length() == 0) {
+                                    cout << "\n" RED "[ERROR] NIM tidak boleh kosong!" RESET "\n";
+                                    system("pause");
+                                    continue;
+                                }
+                                if (nim[0] != 'F' && nim[0] != 'f' || 
+                                    nim[1] != '1' || 
+                                    nim[2] != 'D' && nim[2] != 'd' || 
+                                    nim[3] != '0' || 
+                                    nim[4] != '2') {
                                     cout << "\n" RED "[ERROR] NIM harus diawali dengan 'F1D02'!" RESET "\n";
                                     system("pause");
                                     continue;
@@ -1049,12 +1104,31 @@ void menu_utama() {
                             string nim_login, pass_login;
                             cout << "\nNIM      : ";
                             getline(cin, nim_login);
-                            
+
+                            if (nim_login.length() == 0) {
+                                cout << "\n" RED "[ERROR] NIM tidak boleh kosong!" RESET "\n";
+                                system("pause");
+                                continue;
+                            }
+                            if (nim_login[0] != 'F' && nim_login[0] != 'f' || 
+                                nim_login[1] != '1' || 
+                                nim_login[2] != 'D' && nim_login[2] != 'd' || 
+                                nim_login[3] != '0' || 
+                                nim_login[4] != '2') {
+                                    cout << "\n" RED "[ERROR] NIM harus diawali dengan 'F1D02'!" RESET "\n";
+                                    system("pause");
+                                    continue;
+                            }
+                            if (nim_login.length() != 11) {
+                                    cout << "\n" RED "[ERROR] NIM harus berisi tepat 11 karakter!" RESET "\n";
+                                    system("pause");
+                                    continue;
+                            }
                             cout << "Password : ";
                             getline(cin, pass_login);
 
-                            if (nim_login.length() == 0 || pass_login.length() == 0) {
-                                cout << "\n" RED "[ERROR] NIM dan Password tidak boleh kosong!" RESET "\n";
+                            if (pass_login.length() == 0) {
+                                cout << "\n" RED "[ERROR] Password tidak boleh kosong!" RESET "\n";
                                 system("pause");
                                 continue;
                             }
@@ -1183,10 +1257,14 @@ void menu_utama() {
                             string usn_login, pass_login;
                             cout << "\n===== LOGIN DOSEN =====\n";
                             cout << "Username : "; getline(cin, usn_login);
+                            if (usn_login.length() == 0) {
+                                cout << "\n" RED "[ERROR] Username tidak boleh kosong!" RESET "\n";
+                                system("pause");
+                                continue;
+                            }
                             cout << "Password : "; getline(cin, pass_login);
-
-                            if (usn_login.length() == 0 || pass_login.length() == 0) {
-                                cout << "\n" RED "[ERROR] Username dan Password tidak boleh kosong!" RESET "\n";
+                            if (pass_login.length() == 0) {
+                                cout << "\n" RED "[ERROR] Password tidak boleh kosong!" RESET "\n";
                                 system("pause");
                                 continue;
                             }
