@@ -1,5 +1,5 @@
 # Kelompok 16
-### 📝 SIGMA: Sistem Guna Manajemen Absensi Mahasiswa 📝
+### 📝 SIGMA: Sistem Guna Manajemen Absensi 📝
 
 -------------
 
