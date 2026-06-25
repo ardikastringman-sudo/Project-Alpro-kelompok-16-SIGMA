@@ -27,7 +27,7 @@
 ## Struktur Proyek
 
 ```
-SIGMA (Sistem Informasi Guna Manajemen Absensi)
+SIGMA (Sistem Guna Manajemen Absensi)
 ├── Sign In
 │   AS Mahasiswa
 │   ├── Pilih Mata Kuliah
